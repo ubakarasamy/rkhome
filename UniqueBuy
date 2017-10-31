@@ -1,0 +1,88 @@
+<?php
+/**
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$cart = $objectManager->get('\Magento\Checkout\Model\Cart'); 
+
+// retrieve quote items collection
+$itemsCollection = $cart->getQuote()->getItemsCollection();
+
+// get array of all items what can be display directly
+$itemsVisible = $cart->getQuote()->getAllVisibleItems();
+
+// retrieve quote items array
+$items = $cart->getQuote()->getAllItems();
+
+foreach($items as $item) {
+    echo 'ID: '.$item->getProductId().'<br />';  // product id 
+    
+}
+
+
+//here we have to get my orders database and chek with this product id
+
+
+// db connection
+
+ $this->_resources = \Magento\Framework\App\ObjectManager::getInstance()
+->get('Magento\Framework\App\ResourceConnection');  
+
+$connection= $this->_resources->getConnection();
+$tableName = $this->_resources->getTableName('otpp');
+
+// select data from db table
+
+// SELECT DATA
+$sql = "SELECT otp FROM otpp WHERE `phone`='$phone' AND `dates`='$dates'";
+$result = $connection->fetchall($sql); 
+
+
+if(!empty($result)){ 
+// if already exists
+$code = $result;
+$code = $result[0];
+$otppass = $code['otp'];
+
+
+$ii = 1;
+
+if ($ii = 1) {
+    
+    $block->deleteQuoteItems();   // delete all products from cart when user already bought that product
+}
+
+
+?>
+
+<script type="text/javascript">
+    
+require([
+    'jquery',
+    'Magento_Customer/js/customer-data'
+    ], function($,customerData){
+        $('#customerStore').change(function(){
+            var store_id = $(this).val();
+            var sections = ['cart'];
+            $.ajax({
+            url:'/customer/data/store/store_id/'+store_id,
+            type:'get',
+            dataType: 'html',
+            beforeSend:function(){
+                $('#loader').show();
+            },
+            success:function(response){
+                customerData.invalidate(sections);
+                $('#loader').hide();
+                location.reload();
+            }
+            });
+        });
+    });
+
+</script>
