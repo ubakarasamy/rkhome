@@ -1,0 +1,533 @@
+<?php
+
+
+
+namespace send\sms\Block;
+
+class sendsms extends \Magento\Framework\View\Element\Template
+{
+    /**
+     * @var \Magento\Checkout\Model\Session
+     */
+    protected $checkoutSession;
+
+    /**
+     * @var int
+     */
+    protected $oderId;
+    
+    protected $_customerSession;
+    /**
+     * @var array
+     */
+    protected $lastOrder;
+    
+    protected $orderPrice;
+    
+
+
+    /**
+     * @param \Magento\Framework\View\Element\Template\Context $context
+     * @param \Magento\Checkout\Model\Session $checkoutSession
+     * @param array $data
+     */
+    public function __construct(
+        \Magento\Framework\View\Element\Template\Context $context,
+        \Magento\Checkout\Model\Session $checkoutSession,
+        \Magento\Customer\Model\Session $customerSession,
+        array $data = []
+    ) {
+        parent::__construct($context, $data);
+        $this->checkoutSession = $checkoutSession;
+        $this->_customerSession = $customerSession;
+    }
+
+    protected function _prepareLayout()
+    {
+        $lastOrder = $this->checkoutSession->getLastRealOrder();
+        $this->orderId = $lastOrder->getIncrementId();
+        $this->lastOrder = $lastOrder->getData();
+        return parent::_prepareLayout();
+    }
+    
+
+ 
+    public function getOrderId()
+    {
+        return $this->orderId; 
+    }
+    public function getLastOrder()
+    {
+        return $this->lastOrder;
+    }
+
+    
+  public function getOrderDetails($incrementId)
+{
+    $orderDetail = $this->order->loadByIncrementId($incrementId);
+    return $orderDetail;
+}
+
+
+
+public function shipPhone(){
+     $orderId = $this->getOrderId();
+
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$order = $objectManager->create('Magento\Sales\Model\Order')->loadByIncrementId($orderId);
+
+$shippingAddress = $order->getShippingAddress(); //address
+
+echo $shipphone = $shippingAddress->getTelephone(); //phone number from shipping
+}
+
+
+public function categorymsg(){
+
+ $orderId = $this->getOrderId();
+
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$order = $objectManager->create('Magento\Sales\Model\Order')->loadByIncrementId($orderId);
+
+$shippingAddress = $order->getShippingAddress(); //address
+ $fname = $order->getCustomerFirstname(); //name
+
+$shipphone = $shippingAddress->getTelephone(); //phone number from shipping
+
+$regphone = $this->getRegisteredPhone(); //registered
+
+$price = $order->getGrandTotal()-00; //price
+$items = $order->getAllVisibleItems();
+
+foreach($items as $i):
+    $_product = $objectManager->create('Magento\Catalog\Model\Product')->load($i->getProductId());
+    $categoryIds = $_product->getCategoryIds();
+    
+    $_product = $objectManager->create('Magento\Catalog\Model\Product')->load($i->getProductId());
+    $prname = $_product->getName(); // product names
+endforeach;
+
+$payment = $order->getPayment();
+   $method = $payment->getMethodInstance();
+   $methodTitle = $method->getTitle();
+  
+
+ // Sms templates for products
+
+if (!in_array(77, $categoryIds))  //if products
+{
+  if($methodTitle = "Cash On Delivery") //if is cod
+  {
+    $TemplateName = "scheme_booking";
+  }
+  else{
+      $TemplateName = "normal_products"; //else bank transfer
+  }
+}
+
+ // Sms templates for Schemes
+
+elseif(in_array(77, $categoryIds)){
+
+    if($methodTitle = "Cash On Delivery"){
+          $TemplateName = "scheme_booking";  //For Cash on delivery sms
+    }else{
+         $TemplateName = "scheme_booking";  //For bank transfer sms
+    }
+
+ // Sms templates for category Not mentioned products
+
+}else
+  {
+   if($methodTitle = "Cash On Delivery"){
+         //$TemplateName = "normal_products";  //For Cash on delivery sms
+         $TemplateName = "scheme_booking"; 
+  }else{
+         $TemplateName = "product_paysms ";  //For bank transfer sms
+  }
+      
+}
+
+$YourAPIKey='1c3c98a2-ace2-11e7-94da-0200cd936042';
+$From="RKHOME";
+
+$VAR1=$fname;   //first name
+$VAR2="OrderId" .$orderId; //order id
+$VAR3 = $prname;     //here is the items 
+$VAR4=$price; // total price
+$VAR5="https://rkhomeappliances.co.in/"; // website link
+
+if($shipphone != $regphone){  //send to both numbers
+    
+$To=$shipphone; //phone number from ship
+    
+    ### DO NOT Change anything below this line
+$agent= 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.0.3705; .NET CLR 1.1.4322)';
+$url = "https://2factor.in/API/V1/$YourAPIKey/ADDON_SERVICES/SEND/TSMS"; 
+$ch = curl_init(); 
+curl_setopt($ch,CURLOPT_URL,$url); 
+curl_setopt($ch,CURLOPT_POST,true); 
+curl_setopt($ch,CURLOPT_POSTFIELDS,"TemplateName=$TemplateName&From=$From&To=$To&VAR1=$VAR1&VAR2=$VAR2&VAR3=$VAR3&VAR4=$VAR4");
+curl_setopt($ch, CURLOPT_USERAGENT, $agent);
+echo '<div style="color:white;">';
+echo curl_exec($ch); 
+echo '</div>';
+curl_close($ch);
+    
+$To=$regphone; //phone number from registration
+
+### DO NOT Change anything below this line
+$agent= 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.0.3705; .NET CLR 1.1.4322)';
+$url = "https://2factor.in/API/V1/$YourAPIKey/ADDON_SERVICES/SEND/TSMS"; 
+$ch = curl_init(); 
+curl_setopt($ch,CURLOPT_URL,$url); 
+curl_setopt($ch,CURLOPT_POST,true); 
+curl_setopt($ch,CURLOPT_POSTFIELDS,"TemplateName=$TemplateName&From=$From&To=$To&VAR1=$VAR1&VAR2=$VAR2&VAR3=$VAR3&VAR4=$VAR4");
+curl_setopt($ch, CURLOPT_USERAGENT, $agent);
+echo '<div style="color:white;">';
+echo curl_exec($ch); 
+echo '</div>';
+curl_close($ch);
+
+}elseif($shipphone = $regphone){ //send once
+
+$To=$regphone; //phone number from registration
+
+### DO NOT Change anything below this line
+$agent= 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.0.3705; .NET CLR 1.1.4322)';
+$url = "https://2factor.in/API/V1/$YourAPIKey/ADDON_SERVICES/SEND/TSMS"; 
+$ch = curl_init(); 
+curl_setopt($ch,CURLOPT_URL,$url); 
+curl_setopt($ch,CURLOPT_POST,true); 
+curl_setopt($ch,CURLOPT_POSTFIELDS,"TemplateName=$TemplateName&From=$From&To=$To&VAR1=$VAR1&VAR2=$VAR2&VAR3=$VAR3&VAR4=$VAR4");
+curl_setopt($ch, CURLOPT_USERAGENT, $agent);
+echo '<div style="color:white;">';
+echo curl_exec($ch); 
+echo '</div>';
+curl_close($ch);
+    
+}
+
+
+ 
+
+
+}
+
+public function getCustomerId(){
+    
+        $obm = \Magento\Framework\App\ObjectManager::getInstance();
+    /** @var \Magento\Framework\App\Http\Context $context */
+    $context = $obm->get('Magento\Framework\App\Http\Context');
+    /** @var bool $isLoggedIn */
+    $isLoggedIn = $context->getValue(\Magento\Customer\Model\Context::CONTEXT_AUTH);
+    if($isLoggedIn){ 
+      $om = \Magento\Framework\App\ObjectManager::getInstance();
+           $customerSession = $om->create('Magento\Customer\Model\Session');
+           $suser_id = $customerSession->getCustomer()->getId();
+           return $suser_id;
+           
+}
+}
+
+public function getRegisteredPhone(){
+           
+    $suser_id = $this->getCustomerId();
+    $this->_resources = \Magento\Framework\App\ObjectManager::getInstance()->get('Magento\Framework\App\ResourceConnection');	
+    $connection= $this->_resources->getConnection();
+    $tableName = $this->_resources->getTableName('customer_entity_varchar');
+    $sql = "SELECT value FROM customer_entity_varchar WHERE `entity_id`='$suser_id'";
+     
+    $result = $connection->fetchall($sql);
+    $mobarray = $result['0']; 
+    $mobileNumber = $mobarray['value'];
+    return $mobileNumber;
+
+}
+
+
+
+
+public function cashbk($prid){
+    $this->_resources = \Magento\Framework\App\ObjectManager::getInstance()
+->get('Magento\Framework\App\ResourceConnection');  
+$connection= $this->_resources->getConnection();
+
+
+$sql = "SELECT value FROM `catalog_product_entity_varchar` WHERE `attribute_id` = 167 AND `entity_id` = '$prid'";  //cashback money's
+
+$result = $connection->fetchall($sql); 
+$diss = $result['0'];
+if(empty($result)){
+    $product_dis = 0; 
+}else{
+$product_dis = $diss['value']; 
+ // product discount value for each product
+$dis_amount  = ( $price_product / 100 ) * $product_dis; //product amount
+$connection->query($sql);
+}
+
+return $dis_amount;
+
+
+}
+
+
+public function validitydays($prid){
+    $this->_resources = \Magento\Framework\App\ObjectManager::getInstance()
+->get('Magento\Framework\App\ResourceConnection');  
+
+$connection= $this->_resources->getConnection();
+
+$sql = "SELECT value FROM `catalog_product_entity_varchar` WHERE `attribute_id` = 168 AND `entity_id` = '$prid'";  //cashback money's
+
+$result = $connection->fetchall($sql); 
+$daysto = $result['0'];
+if(empty($result)){
+    $daysto = 0;
+   
+}else{
+$approve = $daysto['value'];  // product discount validity for each product
+
+$addedDays = $daysto['value'];
+
+}
+return $addedDays;
+
+}
+
+    public function walletdiscount(){
+        
+$total_datas = $this->getLastOrder(); 
+/*$total_datas['entity_id']; // order id
+$total_datas['customer_id']; // customer id
+$total_datas['created_at']; // date time
+$total_datas['created_at'];*/
+$orderId = $this->getOrderId();
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$order = $objectManager->create('Magento\Sales\Model\Order')->loadByIncrementId($orderId);
+$price = $order->getGrandTotal();
+$items = $order->getAllItems();
+
+$created = $order->getCreatedAt();
+
+$created = $order->getCreatedAt();
+foreach($items as $item):
+ $item = $items['1'];
+$prid = $item->getProductId();
+     $_productname = 
+$objectManager->create('Magento\Catalog\Model\Product')->load($prid)->getName();
+$quantity_product = $item->getQtyOrdered();
+$price_product = $item->getPrice();
+//get product discount 
+$this->_resources = \Magento\Framework\App\ObjectManager::getInstance()
+->get('Magento\Framework\App\ResourceConnection');  
+$connection= $this->_resources->getConnection();
+$sql = "SELECT value FROM `catalog_product_entity_varchar` WHERE `attribute_id` = 167 AND `entity_id` = '$prid'";  //cashback money's
+$result = $connection->fetchall($sql); 
+$diss = $result['0'];
+$product_dis = $diss['value'];  // product discount value for each product
+$dis_amount  = ( $price_product / 100 ) * $product_dis; //product amount
+$connection->query($sql);
+$discount_for_product = $dis_amount * $quantity_product; //product discount amount with quantity
+//get product validity date
+$this->_resources = \Magento\Framework\App\ObjectManager::getInstance()
+->get('Magento\Framework\App\ResourceConnection');  
+$connection= $this->_resources->getConnection();
+$sql = "SELECT value FROM `catalog_product_entity_varchar` WHERE `attribute_id` = 168 AND `entity_id` = '$prid'";  //cashback money's
+$result = $connection->fetchall($sql); 
+$daysto = $result['0'];
+$approve = $daysto['value'];  // product discount validity for each product
+
+$addedDays = $daysto['value'];
+
+$phpdate = strtotime( $created );  // created date
+$mysqldate = date( 'Y-m-d', $phpdate ); //sortind date format 
+$newDate = date('Y-m-d', strtotime($mysqldate. " + {$addedDays} days")); //add number of days
+
+$leave = $this->getWorkdays($mysqldate, $newDate, $workSat = FALSE, $patron = NULL);
+
+
+$toadd = $addedDays - $leave;
+
+
+
+$today = $created;
+$today = strtotime($today);
+$finish = $newDate;
+$finish = strtotime($finish);
+    //difference
+$diff = $finish - $today;
+$daysleft=floor($diff/(60*60*24));
+    
+$days_to_approve = $daysleft + $toadd;
+
+$connection->query($sql);
+$this->_resources = \Magento\Framework\App\ObjectManager::getInstance()
+->get('Magento\Framework\App\ResourceConnection');  
+$connection= $this->_resources->getConnection();
+
+$orderid = $this->getOrderId();
+
+$created = $order->getCreatedAt();
+$customerid = $order->getCustomerId();
+
+$_prod_cats = $objectManager->create('Magento\Catalog\Model\Product')->load($prid)->getCategoryIds();
+// if category is schemes
+ $categoryIds = $_prod_cats;
+if(in_array(77, $categoryIds)){
+$schemeis = 1;  
+}else{
+$schemeis = 0;
+}
+$sql = "INSERT INTO  wallet_discounts (product_id, product_name, order_id, product_quantity, product_discount_amount, customer_id, created_at, days_to_approve, is_scheme) VALUES ('$prid', '$_productname', '$orderid', '$quantity_product', '$discount_for_product', '$customerid', '$created', '$days_to_approve', '$schemeis')";
+$connection->query($sql);
+
+endforeach;
+
+if(in_array(77, $categoryIds)){
+    echo "<h3>Your Scheme " . $_productname . "Is Booked Successfully</h3>";
+}else{
+    echo "<h3>Congratulations! Your discount amount for " . $_productname . " Rs " . $dis_amount . " of cashback amount is added, check your wallet balance.</h3>";
+}
+
+}
+/*   public function walletdiscount(){
+$total_datas = $this->getLastOrder(); 
+$total_datas['entity_id']; // order id
+$total_datas['customer_id']; // customer id
+$total_datas['created_at']; // date time
+$total_datas['created_at'];
+$orderId = $this->getOrderId();
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$order = $objectManager->create('Magento\Sales\Model\Order')->loadByIncrementId($orderId);
+$price = $order->getGrandTotal();
+$items = $order->getAllItems();
+foreach($items as $item):
+$prid = $item->getProductId();
+     $_productname = 
+$objectManager->create('Magento\Catalog\Model\Product')->load($prid)->getName();
+$quantity_product = $item->getQtyOrdered();
+$price_product = $item->getPrice();
+//get product discount 
+$this->_resources = \Magento\Framework\App\ObjectManager::getInstance()
+->get('Magento\Framework\App\ResourceConnection');  
+$connection= $this->_resources->getConnection();
+$sql = "SELECT value FROM `catalog_product_entity_varchar` WHERE `attribute_id` = 167 AND `entity_id` = '$prid'";  //cashback money's
+$result = $connection->fetchall($sql); 
+$diss = $result['0'];
+$product_dis = $diss['value'];  // product discount value for each product
+$dis_amount  = ( $price_product / 100 ) * $product_dis; //product amount
+$connection->query($sql);
+$discount_for_product = $dis_amount * $quantity_product; //product discount amount with quantity
+//get product validity date
+$this->_resources = \Magento\Framework\App\ObjectManager::getInstance()
+->get('Magento\Framework\App\ResourceConnection');  
+$connection= $this->_resources->getConnection();
+$sql = "SELECT value FROM `catalog_product_entity_varchar` WHERE `attribute_id` = 168 AND `entity_id` = '$prid'";  //cashback money's
+$result = $connection->fetchall($sql); 
+$daysto = $result['0'];
+$approve = $daysto['value'];  // product discount validity for each product
+$addedDays = $daysto['value'];
+$phpdate = strtotime( $total_datas['created_at'] );  // created date
+$mysqldate = date( 'Y-m-d', $phpdate ); //sortind date format 
+$newDate = date('Y-m-d', strtotime($mysqldate. " + {$addedDays} days")); //add number of days
+
+
+$today = $total_datas['created_at'];
+$today = strtotime($today);
+
+
+$toad = $this->getWorkdays($mysqldate, $newDate, $workSat = FALSE, $patron = NULL);
+
+ $toad;
+
+
+$newDate2 = date('Y-m-d', strtotime($mysqldate. " + {$toad} days")); //add number of days
+ $newDate2;
+
+$finish = $newDate2; 
+$finish = strtotime($finish);
+    //difference
+$diff = $finish - $today;
+$daysleft=floor($diff/(60*60*24));
+    
+$days_to_approve = $daysleft;
+$connection->query($sql);
+$this->_resources = \Magento\Framework\App\ObjectManager::getInstance()
+->get('Magento\Framework\App\ResourceConnection');  
+$connection= $this->_resources->getConnection();
+$orderid = $total_datas['entity_id'];
+$created = $total_datas['created_at'];
+$customerid = $total_datas['customer_id'];
+$_prod_cats = $objectManager->create('Magento\Catalog\Model\Product')->load($prid)->getCategoryIds();
+// if category is schemes
+ $categoryIds = $_prod_cats;
+if(in_array(77, $categoryIds)){
+$schemeis = 1;  
+}else{
+$schemeis = 0;
+}
+$sql = "INSERT INTO  wallet_discounts (product_id, product_name, order_id, product_quantity, product_discount_amount, customer_id, created_at, days_to_approve, is_scheme) VALUES ('$prid', '$_productname', '$orderid', '$quantity_product', '$discount_for_product', '$customerid', '$created', '$days_to_approve', '$schemeis')";
+$connection->query($sql);
+
+endforeach;
+
+if(in_array(77, $categoryIds)){
+    echo "<h3>Your Scheme " . $_productname . "Is Booked Successfully</h3>";
+}else{
+    echo "<h3>Congratulations! Your discount amount for " . $_productname . " Rs " . $dis_amount . " of cashback amount is added, check your wallet balance.</h3>";
+}
+    }
+ */
+ 
+
+
+public function getWorkdays($date1, $date2, $workSat = FALSE, $patron = NULL){
+   
+  if (!defined('SATURDAY')) define('SATURDAY', 6);
+  if (!defined('SUNDAY')) define('SUNDAY', 0);
+
+  // Array of all public festivities
+  $publicHolidays = array('01-01', '12-25');
+  // The Patron day (if any) is added to public festivities
+  if ($patron) {
+    $publicHolidays[] = $patron; 
+  }
+
+  /*
+   * Array of all Easter Mondays in the given interval
+   */
+  $yearStart = date('Y', strtotime($date1));
+  $yearEnd   = date('Y', strtotime($date2));
+
+  for ($i = $yearStart; $i <= $yearEnd; $i++) {
+    $easter = date('Y-m-d', easter_date($i));
+    list($y, $m, $g) = explode("-", $easter);
+    $monday = mktime(0,0,0, date($m), date($g)+1, date($y));
+    $easterMondays[] = $monday;
+  }
+
+  $start = strtotime($date1);
+  $end   = strtotime($date2);
+  $workdays = 0;
+  for ($i = $start; $i <= $end; $i = strtotime("+1 day", $i)) {
+    $day = date("w", $i);  // 0=sun, 1=mon, ..., 6=sat
+    $mmgg = date('m-d', $i);
+    if ($day != SUNDAY &&
+      !in_array($mmgg, $publicHolidays) &&
+      !in_array($i, $easterMondays) &&
+      !($day == SATURDAY && $workSat == FALSE)) {
+        $workdays++;
+    }
+  }
+
+  return intval($workdays);
+
+}
+
+
+
+
+
+}
