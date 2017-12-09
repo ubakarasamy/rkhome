@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <head>
+        <action method="addItem">
+            <argument name="type" xsi:type="string">skin_css</argument>
+            <argument name="name" xsi:type="string">pudo/css/pudo.css</argument>
+            <argument name="params" xsi:type="string"/>
+        </action>
+        <js class="Dotzot_Pudo::pudo/custom.js"/>
+        <block template="Dotzot_Pudo::pudo/url.phtml" class="Magento\Framework\View\Element\Template" name="url"/>
+    </head>
+</page>

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <body>
+        <referenceBlock name="customer_account_navigation">
+            <action method="addLink" module="pudo">
+                <argument name="name" xsi:type="string">track</argument>
+                <argument name="path" xsi:type="string">pudo/index/tracking/</argument>
+                <argument translate="true" name="label" xsi:type="string">Track My Order</argument>
+            </action>
+        </referenceBlock>
+    </body>
+</page>

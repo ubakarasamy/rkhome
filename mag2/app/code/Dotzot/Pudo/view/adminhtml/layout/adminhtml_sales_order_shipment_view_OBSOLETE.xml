@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <body>
+        <referenceContainer name="content">
+            <referenceBlock name="sales_shipment_view">
+                <referenceBlock name="form">
+                    <referenceBlock name="invoice_tracking" template="sales/order/shipment/create/tracking.phtml">
+                        <action method="setTemplate">
+                            <argument name="template" xsi:type="string">Dotzot_Pudo::pudo/tracking.phtml</argument>
+                        </action>
+                    </referenceBlock>
+                </referenceBlock>
+            </referenceBlock>
+        </referenceContainer>
+    </body>
+</page>

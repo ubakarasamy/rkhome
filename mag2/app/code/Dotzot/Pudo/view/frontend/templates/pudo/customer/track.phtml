@@ -1,0 +1,52 @@
+<?php
+/*
+ * ​​Magcoders
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * versions in the future. If you wish to customize this extension for your
+ * needs please refer to​ ​
+​
+http://www.​​magcoders.com/ for more information.
+ *
+ * @category   local
+ * @package    ​PUDO Shipping
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @author      ​ ​
+​Support <​support@magcoders.com>
+ **/
+?>
+<div class="track-your-order">
+    <div class="page-title"><h1>Track Your Order</h1></div>
+    <form method="post" action="">
+    <input class="input-text required-entry" type="text" name="DOCKETNO" id="DOCKETNO" />
+    <input type="button" class="input-btn" onclick="gettrack()" value="Track Your Order" title="Track Your Order" />
+    </form>
+    <div class="data"></div>
+</div>
+<script>
+function gettrack(){
+		var docno = jQuery("#DOCKETNO").val(); 
+		if(docno == ''){jQuery('.data').html('<p style="color:red">Please Enter DOCATE No</p>');return false;}
+		jQuery.ajax({ 
+		 url: "<?php echo Mage::getBaseUrl()?>pudo/index/track", 
+		data: "docno="+docno,
+		beforeSend: function() {
+		// setting a timeout
+		jQuery('.data').html('Please Wait.....');
+		},
+		context: document.body
+		}).done(function(response) {
+		if(response)
+		jQuery('.data').html(response);
+		jQuery('#collect_loader').hide(); 
+		});
+	}
+</script>

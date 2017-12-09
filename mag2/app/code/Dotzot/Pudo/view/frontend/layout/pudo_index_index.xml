@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <body>
+        <reference name="root">
+            <action method="setTemplate">
+                <argument name="template" xsi:type="string">Dotzot_Pudo::page/1column.phtml</argument>
+            </action>
+        </reference>
+        <referenceContainer name="content">
+            <block template="Dotzot_Pudo::pudo/index.phtml" class="Dotzot\Pudo\Block\Index" name="pudo_index"/>
+        </referenceContainer>
+    </body>
+</page>

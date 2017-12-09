@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <body>
+        <referenceBlock name="shipment_tracking">
+            <action method="setTemplate">
+                <argument name="template" xsi:type="string">Dotzot_Pudo::pudo/tracking.phtml</argument>
+            </action>
+        </referenceBlock>
+    </body>
+</page>
