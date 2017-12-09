@@ -1,0 +1,19 @@
+<?php
+namespace ;
+
+
+
+class  extends \Magento\Backend\Block\Widget\Grid\Container{
+
+	public function __construct()
+	{
+
+	$this->_controller = "adminhtml_pudo";
+	$this->_blockGroup = "pudo";
+	$this->_headerText = Mage::helper("pudo")->__("Pudo Manager");
+	$this->_addButtonLabel = Mage::helper("pudo")->__("Add New Item");
+	parent::__construct();
+	
+	}
+
+}

@@ -1,0 +1,17 @@
+<?php namespace Magento\Shipping\Model\Carrier;
+
+ 
+    interface CarrierInterface
+		{
+
+		/**
+		 * Check if carrier has shipping tracking option available
+		 *
+		 * @return boolean
+		 */
+		public function isTrackingAvailable(){
+			return true;
+			}
+
+		  
+		}

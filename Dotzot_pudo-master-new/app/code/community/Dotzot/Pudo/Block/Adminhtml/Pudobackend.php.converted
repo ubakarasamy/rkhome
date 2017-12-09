@@ -1,0 +1,13 @@
+<?php namespace ;
+
+ 
+
+class  extends \Magento\Backend\Block\Template {
+
+public function __construct() {
+    parent::__construct();
+    $this->setTemplate('pudo/pudobackend.phtml');
+    $this->setFormAction(Mage::getUrl('*/*/newcsv'));
+  }
+
+}

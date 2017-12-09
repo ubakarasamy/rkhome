@@ -1,0 +1,11 @@
+<?php
+namespace ;
+
+class  extends \Magento\Framework\App\Helper\AbstractHelper
+{
+        parent::__construct(
+            $context
+        );
+
+}
+	 

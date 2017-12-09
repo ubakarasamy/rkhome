@@ -1,0 +1,30 @@
+<?php
+namespace ;
+
+class  extends \Magento\Backend\Block\Widget\Form
+{
+
+    /**
+     * @var \Magento\Framework\Data\FormFactory
+     */
+    protected $formFactory;
+
+    public function __construct(
+        \Magento\Framework\Data\FormFactory $formFactory
+    ) {
+        $this->formFactory = $formFactory;
+    }
+    protected function _prepareForm()
+		{
+				$form = $this->formFactory->create(array(
+				"id" => "edit_form",
+				"action" => $this->getUrl("*/*/save", array("id" => $this->getRequest()->getParam("id"))),
+				"method" => "post",
+				"enctype" =>"multipart/form-data",
+				)
+				);
+				$form->setUseContainer(true);
+				$this->setForm($form);
+				return parent::_prepareForm();
+		}
+}

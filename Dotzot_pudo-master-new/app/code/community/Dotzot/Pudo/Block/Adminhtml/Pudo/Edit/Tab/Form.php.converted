@@ -1,0 +1,51 @@
+<?php
+namespace ;
+
+class  extends \Magento\Backend\Block\Widget\Form
+{
+
+    /**
+     * @var \Magento\Framework\Registry
+     */
+    protected $registry;
+
+    /**
+     * @var \Magento\Framework\Data\FormFactory
+     */
+    protected $formFactory;
+
+    public function __construct(
+        \Magento\Framework\Registry $registry,
+        \Magento\Framework\Data\FormFactory $formFactory
+    ) {
+        $this->formFactory = $formFactory;
+        $this->registry = $registry;
+    }
+    protected function _prepareForm()
+		{
+
+				$form = $this->formFactory->create();
+				$this->setForm($form);
+				$fieldset = $form->addFieldset("pudo_form", array("legend"=>Mage::helper("pudo")->__("Item information")));
+
+				
+						$fieldset->addField("shipping_method", "text", array(
+						"label" => Mage::helper("pudo")->__("shipping_method"),
+						"name" => "shipping_method",
+						));
+						
+						
+						 
+					
+
+				if (Mage::getSingleton("adminhtml/session")->getPudoData())
+				{
+					$form->setValues(Mage::getSingleton("adminhtml/session")->getPudoData());
+					Mage::getSingleton("adminhtml/session")->setPudoData(null);
+				} 
+				elseif($this->registry->registry("pudo_data")) {
+				    $form->setValues($this->registry->registry("pudo_data")->getData());
+				}
+				return parent::_prepareForm();
+		}
+}

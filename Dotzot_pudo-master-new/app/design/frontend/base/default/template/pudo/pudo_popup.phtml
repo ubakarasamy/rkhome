@@ -1,0 +1,77 @@
+<?php
+/*
+ * ​​Magcoders
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * versions in the future. If you wish to customize this extension for your
+ * needs please refer to​ ​
+​
+http://www.​​magcoders.com/ for more information.
+ *
+ * @category   local
+ * @package    ​PUDO Shipping
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @author      ​ ​
+​Support <​support@magcoders.com>
+ **/
+?>
+ 
+<input type="hidden" id="loc" name="loc" value="<?php echo $this->getSkinUrl('pudo/images/location.png') ?>"/> 
+ 
+ 
+	<span style="float:right;">
+    <a href="javascript:close()">X</a>
+</span>
+<img id="pudo_small_logo" src="
+    <?php echo $this->getSkinUrl('pudo/images/location.png') ?>"/>
+    <div class="pudo_search">
+        <label>
+            <?php echo $this->__("Please enter your PIN or City:") ?>
+        </label>
+        <input type="text" name="pudo_postcode" id="criteria" value="<?php echo Mage::getModel('checkout/session')->getQuote()->getBillingAddress()->getPostcode(); ?>" />
+            <button id="BTN" onclick="getlist(document.getElementById('criteria').value)" title="
+                <?php echo $this->__('Search') ?>" class="button" type="button">
+                <span>
+                    <span>
+                        <?php echo $this->__('Search') ?>
+                    </span>
+                </span>
+            </button>
+        </div>
+        <input type="hidden" value="mumbai" id="address"/>
+        <div class="locations">
+            <div class="agent-list" id="agent-list"></div>
+        </div>
+        <div class="popup_button">
+            <button onclick="document.getElementById('pudo_popup').style.display='none'" 
+	title="
+                <?php echo $this->__('Cancel') ?>"
+	class="button" type="button">
+                <span>
+                    <span>
+                        <?php echo $this->__('Cancel') ?>
+                    </span>
+                </span>
+            </button>
+            <button onclick="updateShippingAddress()" title="
+                <?php echo $this->__('Select Location') ?>" class="button" type="button">
+                <span>
+                    <span>
+                        <?php echo $this->__('Select Location') ?>
+                    </span>
+                </span>
+            </button>
+        </div>
+        <div class="result"></div>
+
+ 
+ 
+ 

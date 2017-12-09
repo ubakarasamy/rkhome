@@ -1,0 +1,51 @@
+<?xml version="1.0"?>   
+<layout version="0.1.0">  
+<default>
+        <reference name="head">
+            <action method="addItem"><type>skin_css</type><name>pudo/css/pudo.css</name><params/></action>
+            <action method="addJs"><script>pudo/custom.js</script></action>
+        <block type="core/template" name="url" template="pudo/url.phtml"/>
+        </reference>  
+    </default>    
+  <pudo_index_index>   
+    <reference name="root">   
+      <action method="setTemplate"><template>page/1column.phtml</template></action>   
+    </reference>   
+    <reference name="content">   
+      <block type="pudo/index" name="pudo_index" template="pudo/index.phtml"/>   
+    </reference>   
+  </pudo_index_index> 
+  <pudo_index_track>   
+    <reference name="content">   
+      <action method="setTemplate"><template>page/1column.phtml</template></action>   
+    </reference>   
+    <reference name="content">   
+      <block type="pudo/track" name="pudo_track" template="pudo/customer/track.phtml"/>   
+    </reference>   
+  </pudo_index_track> 
+  <pudo_index_ajax>
+        <reference name="root">
+            <action method="setTemplate"><template>pudo/pudo_popup.phtml</template></action>
+        </reference>
+        <reference name="content">
+            <block type="pudo/pudo" name="pudo_popup" template="pudo/pudo_popup.phtml" />
+        </reference>
+    </pudo_index_ajax>
+     
+    <pudo_index_pickuplist>
+        <reference name="root">
+            <action method="setTemplate"><template>pudo/pickup_list.phtml</template></action>
+        </reference>
+        <reference name="content">
+            <block type="pudo/pudo" name="collect_popup" template="pudo/pickup_list.phtml"/>
+        </reference>
+    </pudo_index_pickuplist> 
+      <customer_account>
+        <!-- Mage_Tag -->
+        <reference name="customer_account_navigation">
+            <action method="addLink" translate="label" module="pudo"><name>track</name><path>pudo/index/tracking/</path><label>Track My Order</label></action>
+        </reference>
+    </customer_account>
+    
+</layout>   
+	

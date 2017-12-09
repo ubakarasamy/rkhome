@@ -1,0 +1,163 @@
+<?php
+/*
+ * ​​Magcoders
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * versions in the future. If you wish to customize this extension for your
+ * needs please refer to​ ​
+​
+http://www.​​magcoders.com/ for more information.
+ *
+ * @category   local
+ * @package    ​PUDO Shipping
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @author      ​ ​
+​Support <​support@magcoders.com>
+ **/
+?>
+<script type="text/javascript"> 
+//<![CDATA[
+var trackingControl;
+trackingControl = {
+    index : 0,
+    add : function () {
+        this.index++;
+        var data = {index:this.index};
+        Element.insert($('track_row_container'), {bottom: this.template.evaluate(data)});
+        $('trackingC' + this.index).disabled = false;
+        $('trackingT' + this.index).disabled = false;
+        $('trackingN' + this.index).disabled = false;
+        this.bindCurrierOnchange();
+    },
+    deleteRow : function(event) {
+        var row = Event.findElement(event, 'tr');
+        if (row) {
+            row.parentNode.removeChild(row)
+        }
+    },
+    bindCurrierOnchange : function() {
+        var elems = $('tracking_numbers_table').select('.select');
+        elems.each(function (elem) {
+            if (!elem.onchangeBound) {
+                elem.onchangeBound = true;
+                elem.valueInput = $(elem.parentNode.parentNode).select('.number-title')[0];
+                elem.observe('change', this.currierOnchange);
+            }
+        }.bind(this));
+    },
+    currierOnchange : function(event) {
+        var elem = Event.element(event);
+        var option = elem.options[elem.selectedIndex];
+        if (option.value && option.value != 'custom') {
+            elem.valueInput.value = option.text;
+        }
+        else {
+            elem.valueInput.value = '';
+        }
+    }
+}
+//]]>
+</script> 
+<div class="grid">
+<?php  
+$id =   $this->getRequest()->getParam('order_id');
+$orders = Mage::getModel('sales/order')->load($id); 
+$payment_method = $orders->getPayment()->getMethodInstance()->getCode(); 
+?>
+<input type="hidden" name="P_Method" id="P_Method" value="<?php echo $payment_method;?>"/>
+<table cellspacing="0" class="data" id="tracking_numbers_table">
+    <col width="100" />
+    <col />
+    <col />
+    <col width="80" />
+    <thead>
+        <tr class="headings">
+            <th><?php echo Mage::helper('sales')->__('Carrier') ?></th>
+            <th><?php echo Mage::helper('sales')->__('Title') ?></th>
+            <th><?php echo Mage::helper('sales')->__('Number') ?> <span class="required">*</span></th>
+            <th class="last"><?php echo Mage::helper('sales')->__('Action') ?></th>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr>
+            <td colspan="4" class="a-center last" style="padding:8px;"><?php echo $this->getChildHtml('add_button') ?></td>
+        </tr>
+    </tfoot>
+    <tbody id="track_row_container">
+        <tr id="track_row_template" class="template no-display">
+            <td>
+                <select name="tracking[__index__][carrier_code]" id="trackingC__index__" class="select carrier carrierlist" onchange="showDocketList(this.id,this.value);" style="width:110px;" disabled="disabled">
+                    <?php foreach ($this->getCarriers() as $_code=>$_name): ?>
+                    <option value="<?php echo $_code ?>"><?php echo $this->escapeHtml($_name) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </td>
+            <td>
+				<input class="input-text number-title" type="text" name="tracking[__index__][title]" id="trackingT__index__" value="" disabled="disabled" /></td>
+            <td>
+                <select id="trackingSelectN__index__" class="docketlist" style="width:110px;display: none;" onchange="updateNumber(this.value,this.id);">
+                    <option value="">Select</option>
+                    <?php
+                        $resource = Mage::getSingleton('core/resource');
+                        $readConnection = $resource->getConnection('core_read');
+                        $query="SELECT track_number FROM sales_flat_shipment_track";
+                        $result= $readConnection->fetchAll($query);
+                        $trackArr=array();
+                        foreach($result as $tn){
+                            $trackArr[]=$tn['track_number'];
+                        }
+                          
+                        $readConnection = $resource->getConnection('core_read');
+                        if($payment_method == 'cashondelivery'){ 
+						$query="SELECT docket_no FROM docket where payment_method='cashondelivery'";
+                        }else{
+						$query="SELECT docket_no FROM docket where payment_method !='cashondelivery'";
+						}
+                        $result= $readConnection->fetchAll($query); 
+                        foreach($result as $dock){
+                            if(!in_array($dock['docket_no'],$trackArr)){  ?>
+                        <option value="<?php echo $dock['docket_no']; ?>"><?php echo $dock['docket_no']; ?></option>
+                        <?php
+                            }
+                        }
+                    ?>
+                </select>
+                <input class="input-text required-entry tracknumber" type="text" name="tracking[__index__][number]" id="trackingN__index__" value="" disabled="disabled" />
+            </td>
+            <td class="last"><a href="#" onclick="trackingControl.deleteRow(event);return false"><?php echo $this->__('Delete') ?></a></td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+trackingControl.template = new Template('<tr>' + $('track_row_template').innerHTML.replace(/__index__/g, '#{index}') + '<\/tr>');
+//]]>
+
+ 
+function showDocketList(id,opValue){
+    var boxId = id.replace("tracking", "");
+    boxId= boxId.replace("C", "N");
+    if (opValue =='pudo'){
+		document.getElementById("tracking"+boxId).style.display = "none";
+		document.getElementById("trackingSelect"+boxId).style.display = "block";  
+    }
+    else{
+		document.getElementById("tracking"+boxId).style.display = "block";
+		document.getElementById("trackingSelect"+boxId).style.display = "none";  
+    } 
+}
+function updateNumber(obj,Id){  
+	 var NextId = Id.replace('Select',''); 
+	  document.getElementById(NextId).value= obj;  
+}
+</script>

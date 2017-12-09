@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<config>
+  <modules>
+    <Dotzot_Docket>
+      <version>0.1.0</version>
+    </Dotzot_Docket>
+  </modules>
+  <global>
+    <helpers>
+      <docket>
+        <class>Dotzot_Docket_Helper</class>
+      </docket>
+    </helpers>
+	<blocks>
+	  <docket>
+		<class>Dotzot_Docket_Block</class>
+	  </docket>
+	</blocks>
+	<models>
+	  <docket>
+		<class>Dotzot_Docket_Model</class>
+		<resourceModel>docket_mysql4</resourceModel>
+	  </docket>
+	  <docket_mysql4>
+		<class>Dotzot_Docket_Model_Mysql4</class>
+		<entities>		  
+			  <docket>
+				<table>docket</table>
+			  </docket>
+        </entities>
+	  </docket_mysql4>
+	</models>
+	<resources>
+	  <docket_setup>
+		<setup>
+		  <module>Dotzot_Docket</module>
+		</setup>
+		<connection>
+		  <use>core_setup</use>
+		</connection>
+	  </docket_setup>
+	  <docket_write>
+		<connection>
+		  <use>core_write</use>
+		</connection>
+	  </docket_write>
+	  <docket_read>
+		<connection>
+		  <use>core_read</use>
+		</connection>
+	  </docket_read>
+	</resources>
+  </global>
+  <admin>
+	<routers>
+	  <docket>
+	    <use>admin</use>
+		<args>
+		  <module>Dotzot_Docket</module>
+		  <frontName>admin_docket</frontName>
+		</args>
+	  </docket>
+	</routers>
+  </admin>
+  <adminhtml>
+	<menu>
+	  <docket module="docket">
+		<title>Docket</title>
+		<sort_order>100</sort_order>
+		<children>
+		  <docket module="docket">
+		    <title>Manage Docket</title>
+			<sort_order>0</sort_order>
+			<action>admin_docket/adminhtml_docket</action>
+		  </docket>
+		   <import module="docket">
+		    <title>Import Docket</title>
+			<sort_order>1</sort_order>
+			<action>admin_pudo/adminhtml_pudobackend</action>
+		  </import>
+		</children>
+	  </docket>
+	</menu>
+	<acl>
+	  <resources>
+		<all>
+		  <title>Allow Everything</title>
+		</all>
+		<admin>
+		  <children>
+			<docket translate="title" module="docket">
+			  <title>Docket</title>
+			  <sort_order>1000</sort_order>
+			  <children>
+		  <docket translate="title">
+			<title>Manage Docket</title>
+			<sort_order>0</sort_order>
+		  </docket>
+		   <import translate="title">
+			<title>Import Docket</title>
+			<sort_order>1</sort_order>
+		  </import>
+			  </children>
+			</docket>
+		  </children>
+		</admin>
+	  </resources>
+	</acl>
+	<layout>
+	  <updates>
+		<docket>
+		  <file>docket.xml</file>
+		</docket>
+	  </updates>
+	</layout>
+  </adminhtml>
+</config> 

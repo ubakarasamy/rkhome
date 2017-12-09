@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config>
+  <modules>
+    <Dotzot_Pudo>
+      <active>true</active>
+      <codePool>community</codePool>    
+      <version>0.1.0</version>
+    </Dotzot_Pudo>
+  </modules>
+</config>

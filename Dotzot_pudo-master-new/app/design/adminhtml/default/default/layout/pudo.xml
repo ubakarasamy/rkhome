@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+  <pudo_adminhtml_pudobackend_index>
+	<reference name="content">
+	  <block type="pudo/adminhtml_pudobackend" name="pudobackend" template="pudo/pudobackend.phtml"/>
+	</reference>
+  </pudo_adminhtml_pudobackend_index>
+  <pudo_adminhtml_pudo_index>
+	<reference name="content">
+	  <block type="pudo/adminhtml_pudo" name="pudo" />
+	</reference>
+  </pudo_adminhtml_pudo_index>
+  <adminhtml_sales_order_shipment_new>
+        <reference name="shipment_tracking">
+            <action method="setTemplate">
+                <template>pudo/tracking.phtml</template>
+            </action>
+        </reference>
+    </adminhtml_sales_order_shipment_new>
+  <adminhtml_sales_order_shipment_view>
+	<reference name="content">
+	  <reference name="sales_shipment_view">
+		<reference name="form">
+		<reference name="invoice_tracking" template="sales/order/shipment/create/tracking.phtml">
+		  <action method="setTemplate"><template>pudo/tracking.phtml</template></action>
+		</reference>
+		</reference>
+	  </reference>
+	</reference>
+  </adminhtml_sales_order_shipment_view>
+</layout>

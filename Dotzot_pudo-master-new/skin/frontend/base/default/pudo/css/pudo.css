@@ -1,0 +1,41 @@
+#BTN{ background: #3399cc !important;border: 0 none;color: #ffffff;display: inline-block;
+font-size: 13px;font-weight: normal;line-height: 19px;padding: 7px 15px;text-align: center;
+text-transform: uppercase;vertical-align: middle;}
+.pick{font-weight:bold;}
+#criteria{width:75%}
+#BTN span{color: #ffffff !important}
+.data span { line-height: 31px; padding-left:10px;}
+.Poplink{font-weight:bold;} 
+.data tr:first-child {background: #ccc none repeat scroll 0 0;color: #000; font-weight: bold;}
+.popup_button {padding-top: 20px;text-align: right;float:left}
+.pickup_locations li {margin-bottom: 10px;}
+#collect_popup #collect_small_logo {height:40px;}
+#collect_popup {position:fixed; z-index:99999; background:#fff; top:5%; left:20%; border:2px solid; 
+width:800px; height: 570px; padding: 15px;}
+#pudo_popup {position:fixed; z-index:99999; background:#fff; top:5%; left:20%; border:2px solid; 
+width:800px; height: 570px; padding: 15px;}
+#collect_loader {background: url("") no-repeat scroll center center #FBFAF6; font-weight: bold;height: 17px;left: 45%;
+opacity: 0.7;padding: 15px;position: fixed;top: 45%;width: 100px;z-index: 99999;}
+#googleMap td span{font-size: 12px !important;padding-left: 10px;}
+.locations{ width:100%; float:left}
+#googleMap{width:550px;height:400px;left:0px;float:left;margin-bottom: 10px}
+.pickup_locations {  font-size: 11px;font-weight: normal; overflow: auto; width: 200px; height:400px; background:#e7f1fa;}
+.pickup_locations li{border-bottom:1px solid #fff; padding: 5px;}
+#shipmode{ margin-top:20px;width: 70%;}
+.pickup_locations .title { font-weight:bold }
+.locations { border-top: 1px solid #000000; border-bottom: 1px solid #000000; padding:10px 0 10px; margin-bottom: 10px; }
+.agent_item {cursor: pointer}
+#map-canvas { height: 300px; width:400px; }
+#collect_small_logo {height:30px; margin-top:-5px;}
+.pudo_search{float: left; padding-top: 10px; width: auto;}
+#pudo_small_logo{float: left;margin-bottom: 10px;margin-right: 20px;width: auto;} 
+label[for="billing:use_for_shipping_no"]
+{
+/*   background:url(../images/pudo_logo_small.png ) no-repeat 210px -2px;*/
+margin-bottom: 10px;
+padding-bottom: 10px;
+padding-top: 4px;
+}
+
+
+

@@ -1,0 +1,123 @@
+<?php
+/*
+ * ​​Magcoders
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * versions in the future. If you wish to customize this extension for your
+ * needs please refer to​ ​
+​
+http://www.​​magcoders.com/ for more information.
+ *
+ * @category   local
+ * @package    ​PUDO Shipping
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @author      ​ ​
+​Support <​support@magcoders.com>
+ **/
+?>
+<?php
+$address=Mage::getModel('checkout/session')->getQuote()->getBillingAddress()->getData();
+if(strlen($address['street'])>=60)
+$address['street']=substr($address['street'], 0, 59);
+$url = "http://pickup.dtdc.com/pudosug/getDTDCPudoLocationslstmap/".urlencode(preg_replace( "/\r|\n/", " ", str_replace('/',' ',$address['street']) ))."/".$address['postcode']."/".$address['city']."/IND/0011/list";
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
+	try { 
+	$response =  curl_exec($ch);
+	curl_close($ch);
+
+	} catch (Exception $e)
+	{
+
+	echo $e->getMessage();
+	}
+$arr = json_decode($response, TRUE);
+$itemsArray = $arr['RESPONSE']['PUDO_ITEMS']; 
+$i=0;
+?>
+<div id="googleMap" ></div>
+<div style="float: right">
+<ul class="pickup_locations" style="hight:50px">
+    <?php if(count($itemsArray) > 0): ?>  
+        <?php foreach($itemsArray['PUDO_ITEM'] as $location): ?>
+            <li>
+                <div class="agent_item" id="<?php echo 'agent_'.$location['PUDO_ID'] ?>" >
+                    <input type="radio"   name="agent_checkbox" class="agent_checkbox"  value="<?php echo 'agent_'.$location['NAME'] ?>">&nbsp;<strong><?php echo $location['NAME'] ?></strong>
+                    <?php if($location['DISTANCE']): ?>
+                        <div class="miles"><?php echo $location['DISTANCE']?></div>
+                    <?php endif; ?>
+                    <div class="address"><?php echo $fulladdress = $location['ADDRESS1'].", ".$location['ADDRESS2'];?></div>
+                    <?php
+                        $address = trim($location['ADDRESS1']).','.$location['CITY'].' '.$location['ZIPCODE'].', india';
+                    ?>
+                    <?php
+                        $GridX = $location['LATITUDE'];
+                        $GridY = $location['LONGITUDE']; 
+                         $latlong =$GridX.",".$GridY;
+                    ?>
+                    <div class="agent_address" style="display: none"><?php echo $location['ADDRESS1'].", ".$location['ADDRESS2'] ?></div>
+                    <div class="agent_name" style="display: none"><?php echo $location['NAME'] ?></div>
+                    <div class="agent_city" style="display: none"><?php echo $location['CITY'] ?></div>
+                    <div class="agent_postcode" style="display: none"><?php echo $location['ZIPCODE'] ?></div>
+                    <div class="agent_latlong" style="display: none"><?php echo $latlong?></div>
+                    <div class="agent_id" style="display: none"><?php echo $location['PUDO_ID'] ?></div>
+                    <div class="agent_timing" style="display: none">
+						
+						<div id="agent_detail_tbl" style="display:none;">
+							<table cellspacing="3" cellpadding="3" border="1" width="440" style="font-weight: normal;font-size:14px">
+								<tbody>
+									<tr>
+										<td width="90" rowspan="3">
+										<img alt="extrainfo" style="height: 42px;width: 80px;margin: 0 auto;" 
+										src="<?php echo $this->getSkinUrl('pudo/images/location.png') ?>" style="width:auto; height:62px;" class="parcelshoplogo bubble">
+										</td>
+										<td><strong><span><?php echo $location['NAME'] ?></span></strong></td>
+									</tr>
+									<tr>
+										<td><span><?php echo $location['ADDRESS1'];?></span></td>
+									</tr>	
+									<tr>
+										<td><span><?php echo $location['ZIPCODE'].",".$location['CITY'] ?></span></td>
+									</tr>
+								</tbody>
+							</table>
+						</div> 
+						<?php $location_in_out = $location['OPENING_HOURS_ITEMS']['OPENING_HOURS_ITEM']?>
+						<table width="440" border="1" style="text-align:center"> 
+							<tr>
+								<?php if($location['MondayOpen'] != '0000' && $location['MondayClose'] != '0000'): ?>
+									<td> <span><?php echo $this->__('Monday -Saturday') ?></span></td><td>
+									<span><?php echo $location_in_out[0]['START_TM']." - ".$location_in_out[0]['END_TM'].'</span></td><td><span>'.$location_in_out[1]['START_TM']." - ".$location_in_out[1]['END_TM']?></span></td>
+								<?php endif; ?>
+							</tr> 
+							<tr>
+							<?php if($location['SundayOpen'] != '0000' && $location['SundayClose'] != '0000'): ?>
+						   <td> <span><?php echo $this->__('Sunday ') ?></span></td><td><span><?php echo $location['SundayOpen'].'-'.$location['SundayClose']?></span></td><td><span><?php echo $location['SundayOpen'].'-'.$location['SundayClose']?></span></td>
+							<?php endif; ?>
+							</tr> 
+                        </table>
+                         </div>
+                </div>
+            </li>
+            <?php $i++; ?>
+        <?php  endforeach; ?>
+    <?php elseif(count($locations) == 0 && $statusCode == 0): ?>
+        <li><?php echo $this->__("No records found.") ?></li>
+     <?php else: ?>
+        <li><?php echo $message ?></li>
+    <?php endif; ?>
+</ul>
+</div>
+
+
+ 

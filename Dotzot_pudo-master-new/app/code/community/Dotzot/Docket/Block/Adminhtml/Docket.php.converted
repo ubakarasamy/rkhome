@@ -1,0 +1,23 @@
+<?php
+namespace ;
+
+
+
+class  extends \Magento\Backend\Block\Widget\Grid\Container{
+
+	public function __construct()
+	{
+
+	$this->_controller = "adminhtml_docket";
+	$this->_blockGroup = "docket";
+	$this->_headerText = Mage::helper("docket")->__("Docket Manager");
+	$this->_addButtonLabel = Mage::helper("docket")->__("Add New Item");
+	$this->_addButton('sample', array(
+			'label'   => Mage::helper('docket')->__('Download Sample CSV'),
+			'onclick' => "setLocation('".Mage::getBaseUrl(\Magento\Store\Model\Store::URL_TYPE_WEB)."pudo/index/samplecsv')", 
+			)); 
+	parent::__construct();
+	
+	}
+
+}

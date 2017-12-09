@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+  <docket_adminhtml_docket_index>
+	<reference name="content">
+	  <block type="docket/adminhtml_docket" name="docket" />
+	</reference>
+  </docket_adminhtml_docket_index>
+</layout>
